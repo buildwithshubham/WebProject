@@ -13,6 +13,6 @@ public class WebContoller {
 	
 	@GetMapping("/status")
 	public String status() {
-		return "Program is ruunnning";
+		return "Program is ruunnning by swati";
 	}
 }
