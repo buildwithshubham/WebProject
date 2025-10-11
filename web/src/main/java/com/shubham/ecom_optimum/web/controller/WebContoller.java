@@ -14,7 +14,7 @@ public class WebContoller {
 	@GetMapping("/status")
 	public String status() {
 
-		return "I love you gatthu";
+		return "I love you gatthu 2 chinu";
 
 	}
 }
