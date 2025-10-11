@@ -13,8 +13,8 @@ public class WebContoller {
 	
 	@GetMapping("/status")
 	public String status() {
-<<<<<<< HEAD
+
 		return "Program is ruunnning by swati kadaskar shubham";
->>>>>>> 045e7e4f131879f398ec6855c8ff231fc750732a
+
 	}
 }
