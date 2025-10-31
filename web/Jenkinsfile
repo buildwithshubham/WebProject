@@ -60,11 +60,11 @@ pipeline {
 
         stage('Deploy to GKE') {
             steps {
-                sh '''
-                    echo "Deploying application to GKE..."
-                    kubectl apply -f ${KUBE_DEPLOYMENT}
-                    kubectl apply -f ${KUBE_SERVICE}
-                '''
+				 dir('web') {
+         	     echo "Deploying application to GKE..."
+         	     sh "kubectl apply -f ${KUBE_DEPLOYMENT}"
+           		 sh "kubectl apply -f ${KUBE_SERVICE}"
+              }
             }
         }
     }
