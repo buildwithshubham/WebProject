@@ -6,6 +6,9 @@ pipeline {
         IMAGE_TAG = "1.0"
         KUBE_DEPLOYMENT = "springboot-deployment.yaml"
         KUBE_SERVICE = "springboot-service.yaml"
+        CLUSTER_NAME = "my-autopilot-cluster"
+        REGION = "asia-south1"
+        PROJECT_ID = "midyear-calling-472010-p3"  // <-- Replace with your actual GCP project ID
     }
 
     stages {
@@ -42,10 +45,26 @@ pipeline {
             }
         }
 
-        stage('Deploy to Minikube') {
+        stage('Authenticate to GCP') {
             steps {
-                sh "kubectl apply -f ${KUBE_DEPLOYMENT}"
-                sh "kubectl apply -f ${KUBE_SERVICE}"
+                withCredentials([file(credentialsId: 'gcp-sa-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                    sh '''
+                        echo "Activating GCP service account..."
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                        gcloud config set project ${PROJECT_ID}
+                        gcloud container clusters get-credentials ${CLUSTER_NAME} --region=${REGION}
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to GKE') {
+            steps {
+                sh '''
+                    echo "Deploying application to GKE..."
+                    kubectl apply -f ${KUBE_DEPLOYMENT}
+                    kubectl apply -f ${KUBE_SERVICE}
+                '''
             }
         }
     }
