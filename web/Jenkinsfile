@@ -9,30 +9,35 @@ pipeline {
     }
 
     stages {
-    stage('Checkout') {
-        steps {
-            git branch: 'main', url: 'https://github.com/buildwithshubham/WebProject.git'
-        }
-    }
-
-        stage('Build') {
-            steps dir('web') {
-                sh 'mvn clean package -DskipTests'
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/buildwithshubham/WebProject.git'
             }
         }
 
-        stage('Docker Build')
-          dir('web') {
+        stage('Build') {
             steps {
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                dir('web') {
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir('web') {
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                }
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([string(credentialsId: 'dockerhub-token', variable: 'DOCKER_TOKEN')]) {
-                    sh "echo $DOCKER_TOKEN | docker login -u shubhamkadaskar --password-stdin"
-                    sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh '''
+                        echo "$DOCKER_TOKEN" | docker login -u shubhamkadaskar --password-stdin
+                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                    '''
                 }
             }
         }
