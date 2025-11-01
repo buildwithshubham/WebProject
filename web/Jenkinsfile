@@ -64,6 +64,7 @@ pipeline {
          	     echo "Deploying application to GKE..."
          	     sh "kubectl apply -f ${KUBE_DEPLOYMENT}"
            		 sh "kubectl apply -f ${KUBE_SERVICE}"
+           		 sh "kubectl apply -f springboot-podmonitor.yaml || true"
               }
             }
         }

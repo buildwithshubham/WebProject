@@ -18,7 +18,9 @@ spec:
         - name: springboot
           image: shubhamkadaskar/web-app:1.0
           ports:
-            - containerPort: 8080
+          - name: http
+            containerPort: 8080
+            protocol: TCP
           resources:
             requests:
               cpu: 250m
